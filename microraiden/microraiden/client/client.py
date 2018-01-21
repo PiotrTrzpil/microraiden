@@ -4,7 +4,6 @@ from typing import List
 import os
 from eth_utils import decode_hex, is_same_address, is_hex, remove_0x_prefix, to_checksum_address
 from web3 import Web3, HTTPProvider
-from microraiden import config
 from microraiden.utils import (
     privkey_to_addr,
     get_private_key,

@@ -126,7 +126,7 @@ class Channel:
             self.deposit += deposit
             return event
         else:
-            log.error('No event received.')
+            log.error('No ChannelToppedUp event received.')
             return None
 
     def close(self, balance=None):
@@ -176,7 +176,7 @@ class Channel:
             self.state = Channel.State.settling
             return event
         else:
-            log.error('No event received.')
+            log.error('No ChannelCloseRequested event received.')
             return None
 
     def close_cooperatively(self, closing_sig: bytes):
@@ -234,7 +234,7 @@ class Channel:
             self.state = Channel.State.closed
             return event
         else:
-            log.error('No event received.')
+            log.error('No ChannelSettled event received.')
             return None
 
     def settle(self):
@@ -291,7 +291,7 @@ class Channel:
             self.on_settle(self)
             return event
         else:
-            log.error('No event received.')
+            log.error('No ChannelSettled event received.')
             return None
 
     def create_transfer(self, value):

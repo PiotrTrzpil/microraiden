@@ -3,10 +3,10 @@ from typing import List
 
 import os
 from eth_utils import decode_hex, is_same_address, is_hex, remove_0x_prefix, to_checksum_address
-from web3 import Web3
-from web3.providers.rpc import HTTPProvider
-
+from web3 import Web3, HTTPProvider
+from microraiden import config
 from microraiden.utils import (
+    privkey_to_addr,
     get_private_key,
     get_logs,
     get_event_blocking,
@@ -44,6 +44,7 @@ class Client:
         # a new one.
         if not web3:
             web3 = Web3(HTTPProvider(WEB3_PROVIDER_DEFAULT))
+            web3.eth.defaultAccount = privkey_to_addr(private_key)
 
         channel_manager_address = (
             channel_manager_address or config.CHANNEL_MANAGER_ADDRESS
@@ -144,8 +145,8 @@ class Client:
         token_balance = self.context.token.call().balanceOf(self.context.address)
         if token_balance < deposit:
             log.error(
-                'Insufficient tokens available for the specified deposit ({}/{})'
-                .format(token_balance, deposit)
+                'Insufficient tokens available for the specified deposit ({}/{}) on address: {}'
+                .format(token_balance, deposit, self.context.address)
             )
             return None
 
@@ -194,7 +195,7 @@ class Client:
             )
             self.channels.append(channel)
         else:
-            log.error('Error: No event received.')
+            log.error('Error: No ChannelCreated event received.')
             channel = None
 
         return channel

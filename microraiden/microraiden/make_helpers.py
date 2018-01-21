@@ -13,6 +13,7 @@ from microraiden.exceptions import (
 from microraiden import constants
 from microraiden.config import NETWORK_CFG
 from microraiden.proxy.paywalled_proxy import PaywalledProxy
+from microraiden.utils import privkey_to_addr
 
 log = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ def make_paywalled_proxy(
 ) -> PaywalledProxy:
     if web3 is None:
         web3 = Web3(HTTPProvider(constants.WEB3_PROVIDER_DEFAULT, request_kwargs={'timeout': 60}))
+        web3.eth.defaultAccount = privkey_to_addr(private_key)
         contract_address = contract_address or NETWORK_CFG.CHANNEL_MANAGER_ADDRESS
     channel_manager = make_channel_manager(private_key, contract_address, state_filename, web3)
     proxy = PaywalledProxy(channel_manager, flask_app, constants.HTML_DIR, constants.JSLIB_DIR)
